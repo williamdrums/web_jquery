@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Cadastro de Cliente</title>
+</head>
+
+<script src="js/jquery-3.1.1.min.js"></script>
+
+<script>
+	$(document).ready(function() {
+
+   function carregarClientes(){
+		
+	   conteudo.innerHTML = "";
+	   
+	   $.get("clientes",function(data,status){
+			
+			
+	        /* var dadosJson = '{"clientes": [{"id": "1","nome": "William", "email": "williandrums@gmail.com"},{"id": "2","nome": "Marcelle", "email": "marcelle@hotmail.com"}] }'; */		
+	        var dados = JSON.parse(data);
+			
+			conteudo = document.getElementById("conteudo");
+			
+			for(i=0;i<dados.clientes.length;i++){
+			
+				conteudo.innerHTML += "Id:"+dados.clientes[i].id+" , "+"Nome:"+dados.clientes[i].nome+" , "+"Email:"+dados.clientes[i].email+"<br>";
+			}
+		});
+	}
+   carregarClientes();
+		
+				
+		$("#btnSalvar").click(function() {
+
+			//pegando os dados vindo do controller 
+			txtNome = $("#txtNome").val();
+			txtEmail = $("#txtEmail").val();
+
+			$.post("clientes", {
+				nome : txtNome,
+				email : txtEmail
+			},
+
+			//callback
+			function(data, status) {
+				window.alert("Salvo com Sucesso!");
+				carregarClientes();
+			});
+		});
+	});
+</script>
+
+<body bgcolor="grey">
+	<h1>Cadastro de Cliente</h1>
+	<form>
+
+		<label>Nome: </label> <input type="text" id="txtNome" /><br>
+		<br> <label>E-mail: </label> <input type="text" id="txtEmail" /><br>
+
+		<input type="button" id="btnSalvar" value="Salvar" />
+
+
+
+	</form>
+	
+		<div id="conteudo">
+		
+		</div>
+	     
+
+</body>
+</html>
