@@ -1,4 +1,4 @@
-package cadastrocliente;
+package controller;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -11,6 +11,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.jsonFormatVisitors.JsonAnyFormatVisitor;
 
 import model.Cliente;
 
@@ -33,7 +34,7 @@ public class ClienteController extends HttpServlet {
 	@Override
 	protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 
-		// captura da tela
+		// captura dados vindos da tela html
 		String nome = req.getParameter("nome");
 		String email = req.getParameter("email");
 
@@ -52,34 +53,13 @@ public class ClienteController extends HttpServlet {
 	@Override
 	protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 
-		//stringbuffer é uma string com uma performace mais rapida 
-		StringBuffer json= new StringBuffer("{\"clientes\": [");
-		for(int i=0;i<listaCliente.size();i++){
-			Cliente c = listaCliente.get(i);
-			
-			
-			
-			String id= c.getId().toString();
-			String nome = c.getNome();
-			String email = c.getEmail();
-			
-			//string de jason
-			//esta concatenando atraves do metodo do stringbuffer append
-			json.append( "{\"id\": \""+id+"\", \"nome\": \""+nome+"\", \"email\": \""+email+"\"}");
+		ObjectMapper mapper = new ObjectMapper();
 
-			
-			
-			//a cada vez que for inserido um objeto vai ser adicionado
-			//ao final do objeto uma virgular
-            if((i+1)!=listaCliente.size()){
-				json.append(",");
-			}
-          
-		}
+		String json = mapper.writeValueAsString(listaCliente);
 		
-		json.append("]}");
-		
-		resp.getWriter().print(json);
+		json = "{\"clientes\":" + json + "}";
+
+		resp.getWriter().println(json);
 	}
 
 }
